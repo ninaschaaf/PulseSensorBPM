@@ -33,7 +33,7 @@ long PulseSensorBPM::getVersion() {
  * This code assumes that the application constructs
  * a PulseSensorBPM object only once.
  */
-PulseSensorBPM::PulseSensorBPM(int pulse_pin, unsigned long sample_interval_ms) {
+PulseSensorBPM::PulseSensorBPM(uint8_t pulse_pin, unsigned long sample_interval_ms) {
   pinPulse = pulse_pin;
   sampleIntervalMs = sample_interval_ms;
 
@@ -82,7 +82,7 @@ int PulseSensorBPM::getIBI() {
  *
  * Used in the original code to drive an LED.
  */
-boolean PulseSensorBPM::isPulse() {
+bool PulseSensorBPM::isPulse() {
   return(Pulse);
 }
 
@@ -91,10 +91,10 @@ boolean PulseSensorBPM::isPulse() {
  * Returns true if the start of a pulse was found
  * (the variable QS in the original code), false otherwise.
  */
-boolean PulseSensorBPM::readSensor() {
-  boolean QS = false;                        // value to return. True if we found the start of a pulse.
+bool PulseSensorBPM::readSensor() {
+  bool QS = false;                        // value to return. True if we found the start of a pulse.
 
-  Signal = analogRead(pinPulse);             // read a sample from the pulse sensor
+  Signal = adcHandler.ADC_Read(pinPulse);             // read a sample from the pulse sensor
 
   sampleCounter += sampleIntervalMs;         // keep track of the time in mS with this variable
   int N = sampleCounter - lastBeatTime;      // monitor the time since the last beat to avoid noise
@@ -133,7 +133,7 @@ boolean PulseSensorBPM::readSensor() {
 
 
       // keep a running total of the last 10 IBI values
-      word runningTotal = 0;                  // clear the runningTotal variable
+      uint16_t runningTotal = 0;                  // clear the runningTotal variable
 
       for(int i=0; i<=8; i++){                // shift data in the rate array
         rate[i] = rate[i+1];                  // and drop the oldest IBI value

@@ -17,4 +17,5 @@ Tested on Arduino 101 and Arduino Uno.
   * **Note2**: The [Arduino 101 specs page](https://www.arduino.cc/en/Main/ArduinoBoard101) says the analog input is "...from ground to 3.3 volts", so experiment with powering the Pulse Sensor from 3.3V vs. 5V and see which works better for you.
 
 ##NOTE
-I am not the owner of this work. The original code is from [WorldFamousElectronics](https://github.com/WorldFamousElectronics). I just copied it into my own repo because the original repo was removed from the WorldFamousElectronics-Page.
+I am not the owner of this work. The original code is from [WorldFamousElectronics](https://github.com/WorldFamousElectronics).
+I modified the code to be able to use it for my own project.

@@ -20,7 +20,7 @@
 #ifndef pulsesensorbpm_h
 #define pulsesensorbpm_h
 
-#include <Arduino.h>
+#include "ADCHandler.h"
 
 /*
  * PulseAmpedSensorVersion = binary version number of this library.
@@ -31,14 +31,14 @@
 
 class PulseSensorBPM {
   private:
-    int pinPulse;                   // Analog Input pin the Pulse Sensor is connected to.
+    uint8_t pinPulse;                   // Analog Input pin the Pulse Sensor is connected to.
 
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
     volatile int BPM;                // int that holds raw Analog in 0. updated every call to readSensor()
-    volatile int Signal;             // holds the incoming raw data (0..1023)
+    volatile uint16_t Signal;        // holds the incoming raw data (0..1023)
     volatile int IBI;                // int that holds the time interval (ms) between beats! Must be seeded!
-    volatile boolean Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
+    volatile bool Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
 
     // Variables internal to the pulse detection algorithm.
     // Not volatile because we use them only in the pulse detection function.
@@ -50,16 +50,17 @@ class PulseSensorBPM {
     int T;                           // used to find trough in pulse wave, seeded (sample value)
     int thresh;                      // used to find instant moment of heart beat, seeded (sample value)
     int amp;                         // used to hold amplitude of pulse waveform, seeded (sample value)
-    boolean firstBeat;               // used to seed rate array so we startup with reasonable BPM
-    boolean secondBeat;              // used to seed rate array so we startup with reasonable BPM
+    bool firstBeat;               // used to seed rate array so we startup with reasonable BPM
+    bool secondBeat;              // used to seed rate array so we startup with reasonable BPM
+    ADCHandler& adcHandler = ADCHandler::getInstance();
 
   public:
     static long getVersion();
-    PulseSensorBPM(int pulse_pin, unsigned long sample_interval_ms);
+    PulseSensorBPM(uint8_t pulse_pin, unsigned long sample_interval_ms);
     int getSignal();
     int getBPM();
     int getIBI();
-    boolean isPulse();
-    boolean readSensor();
+    bool isPulse();
+    bool readSensor();
 };
 #endif // pulsesensorbpm_h
