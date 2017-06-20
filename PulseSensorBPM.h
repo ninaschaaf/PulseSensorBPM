@@ -19,29 +19,25 @@
  */
 #ifndef pulsesensorbpm_h
 #define pulsesensorbpm_h
-
 #include "ADCHandler.h"
-
 /*
  * PulseAmpedSensorVersion = binary version number of this library.
  *   rightmost (lsb) 4 hexidecimal digits = minor version number;
  *   next left 4 digits = major version number.
  */
 #define PULSE_AMPED_BPM_VERSION 0x00010000L
-
 class PulseSensorBPM {
   private:
     uint8_t pinPulse;                   // Analog Input pin the Pulse Sensor is connected to.
-
     // Pulse detection output variables.
     // Volatile because our pulse detection code could be called from an Interrupt
     volatile int BPM;                // int that holds raw Analog in 0. updated every call to readSensor()
     volatile uint16_t Signal;        // holds the incoming raw data (0..1023)
     volatile int IBI;                // int that holds the time interval (ms) between beats! Must be seeded!
     volatile bool Pulse;          // "True" when User's live heartbeat is detected. "False" when not a "live beat".
-
     // Variables internal to the pulse detection algorithm.
     // Not volatile because we use them only in the pulse detection function.
+    ADCHandler adcHandler;
     unsigned long sampleIntervalMs;  // expected time between calls to readSensor(), in milliseconds.
     int rate[10];                    // array to hold last ten IBI values (ms)
     unsigned long sampleCounter;     // used to determine pulse timing. Milliseconds since we started.
@@ -52,8 +48,6 @@ class PulseSensorBPM {
     int amp;                         // used to hold amplitude of pulse waveform, seeded (sample value)
     bool firstBeat;               // used to seed rate array so we startup with reasonable BPM
     bool secondBeat;              // used to seed rate array so we startup with reasonable BPM
-    ADCHandler& adcHandler = ADCHandler::getInstance();
-
   public:
     static long getVersion();
     PulseSensorBPM(uint8_t pulse_pin, unsigned long sample_interval_ms);
